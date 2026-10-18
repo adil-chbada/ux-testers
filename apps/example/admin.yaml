@@ -1,0 +1,17 @@
+id: example-admin
+name: Alex, 31, support team
+languages: { speaks: [english], reads: [english], ui_choice: english }
+tech:
+  level: high
+  device: pc
+  network: wifi
+  habits: works in the app's admin screens every day, answers users by chat and email
+business:
+  trade: support team (sets up accounts for new users)
+  staff: 3
+  today: reads new requests, creates the account, sends the login
+  customers: the app's users
+goal: Set up the account a visitor asked for
+pains: ["requests that are hard to find", "forms that make me type the same thing twice"]
+doubts: ["did I give the right access", "will the user manage to sign in alone"]
+patience: high

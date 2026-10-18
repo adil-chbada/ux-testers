@@ -1,0 +1,18 @@
+id: retiree-low-tech
+name: Margaret, 68, Leeds
+languages: { speaks: [english], reads: [english], ui_choice: english, locale: en-GB }
+tech:
+  level: low
+  device: android-budget
+  network: slow-3g
+  habits: video calls with family on a tablet, reads the news; her grandson set up her phone
+literacy: reads well but slowly; small grey text is hard for her
+accessibility: [poor eyesight]
+business:
+  trade: retired teacher
+  today: writes things down on paper; calls when she is unsure
+  customers: none
+goal: explore freely
+pains: ["apps that change every month", "buttons that are just icons"]
+doubts: ["is it safe to give my phone number", "will I be charged without noticing"]
+patience: low

@@ -1,0 +1,5 @@
+node_modules/
+runs/
+# one folder per app under test; only the example is shared
+apps/*
+!apps/example/

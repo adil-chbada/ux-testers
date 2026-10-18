@@ -1,0 +1,17 @@
+id: busy-parent
+name: Daniel, 39, Lyon
+languages: { speaks: [french, english], reads: [french, english], ui_choice: french, locale: fr-FR }
+tech:
+  level: medium
+  device: iphone
+  network: 3g
+  habits: uses banking, shopping and school apps on the go, one-handed, often interrupted
+literacy: reads French well, English for simple things
+business:
+  trade: nurse and parent of two
+  today: plans everything in his phone's calendar and notes
+  customers: none
+goal: explore freely
+pains: ["sign-ups that take more than a minute", "too many notifications"]
+doubts: ["is it worth another account", "can I do it in five minutes"]
+patience: medium

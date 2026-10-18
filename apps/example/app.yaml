@@ -1,0 +1,24 @@
+# Settings for one app under test. Copy this folder to apps/<your-app>/ and run with --app <your-app>.
+# Everything here is optional; without the folder, general defaults are used.
+name: Example App              # what testers call your app
+team: the Example App team     # who testers reach with ask_admin (--admin)
+prod_domains: [example.com]    # your production domains: never reachable; a navigation to one stops the run
+timezone: UTC                  # the testers' browser timezone
+phone_format: "555#######"     # fake phone numbers for testers; each # is a random digit
+# second_language: ar          # testers also write every thought, finding and message in this language (e.g. ar, fr, es)
+
+# Only for --admin (testers who need a team member to create or approve their account):
+admin:
+  start_path: /admin           # where the admin agent starts
+  signin_path: /login          # where a new user signs in
+  # job: |                     # optional: the admin's task, with {placeholders}; the default is DEFAULT_JOB in src/persona.ts
+  #   1. Sign in at {app_url}{start_path} with phone {admin_phone} and password {admin_password}.
+  #   2. Create the account for {visitor_name} with phone {visitor_phone} and password {visitor_password}.
+  #   3. Call reply with how to sign in at {app_url}{signin_path}. 4. Call finish.
+
+# Also in this folder, when you need them:
+#   personas/*.yaml       your own testers (otherwise the examples in the repo's personas/)
+#   admin.yaml            the admin agent's persona (for --admin)
+#   admin.local.json      { "phone": "…", "password": "…" } of an admin that exists ONLY in your dev database
+#   scripted-admin.ts     the no-AI admin's API calls (for --admin, when the AI admin gives no reply)
+#   README.md             notes for running this app

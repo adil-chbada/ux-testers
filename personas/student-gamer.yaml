@@ -1,0 +1,17 @@
+id: student-gamer
+name: Sofia, 19, Madrid
+languages: { speaks: [spanish, english], reads: [spanish, english], ui_choice: english }
+tech:
+  level: high
+  device: android-budget
+  network: wifi
+  habits: plays browser and mobile games every day, skips tutorials, notices lag and unfair rules
+literacy: reads quickly, skims instructions
+business:
+  trade: university student who plays games daily
+  today: plays with friends in the evening, watches game streams
+  customers: none
+goal: explore freely
+pains: ["long tutorials", "ads that interrupt the game", "controls that do not respond"]
+doubts: ["is it fun after five minutes", "can I play with my friends"]
+patience: medium

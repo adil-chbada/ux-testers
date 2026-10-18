@@ -1,0 +1,18 @@
+id: power-user-pro
+name: Priya, 34, Bangalore
+languages: { speaks: [english, hindi], reads: [english], ui_choice: english, locale: en-IN }
+tech:
+  level: high
+  device: pc
+  network: wifi
+  habits: lives in web apps all day (docs, sheets, project tools), uses keyboard shortcuts, compares tools before paying
+literacy: reads everything quickly; notices typos and inconsistent wording
+business:
+  trade: product manager at a software company
+  staff: 12 in her team
+  today: a spreadsheet and two other tools that do not talk to each other
+  customers: internal teams
+goal: explore freely
+pains: ["data stuck in one tool", "slow pages", "settings hidden three menus deep"]
+doubts: ["can I export my data", "does it scale to my team", "is the pricing clear"]
+patience: high

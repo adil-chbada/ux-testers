@@ -1,0 +1,18 @@
+id: shop-owner-arabic
+name: Omar, 52, Amman
+languages: { speaks: [arabic], reads: [arabic], ui_choice: arabic, locale: ar-JO }
+tech:
+  level: low
+  device: android-budget
+  network: 3g
+  habits: WhatsApp all day for customers and suppliers; has never filled a long online form
+literacy: reads Arabic comfortably; does not read English
+business:
+  trade: grocery shop owner
+  staff: alone, his son helps on weekends
+  today: a paper notebook for customers who pay later
+  customers: families in his neighbourhood
+goal: explore freely
+pains: ["customers forget what they owe", "everything online is in English"]
+doubts: ["I do not read English", "my son is not always here to help"]
+patience: medium
