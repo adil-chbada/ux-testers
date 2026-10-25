@@ -9,13 +9,14 @@
 import { existsSync } from "node:fs";
 import { join } from "node:path";
 import { parseArgs } from "node:util";
-import { runAgent, subscriptionProblem, type AdminSetup } from "./agent";
+import { runAgent, subscriptionProblem, testIdentity, type AdminSetup } from "./agent";
 import { ConfigError, loadApp, ROOT } from "./app";
 import { isDevUrl, setProdDomains } from "./guard";
 import { lang2 } from "./lang";
 import { listPersonas } from "./persona";
 import { testerProgress } from "./progress";
 import { makeReport } from "./report";
+import { createAccount } from "./scripted-admin";
 
 const HELP = `Run AI test users on your local app.
 
@@ -28,6 +29,7 @@ Options
   --goal "<task>"        one task for every tester   --steps <n>    most actions (default 60)
   --minutes <n>          most minutes per tester (default 15, 25 with --admin)
   --admin                testers may ask a team member for an account   --admin-minutes <n> (default 10)
+  --account              every tester starts with an account made for them in your DEV database (apps/<app>/scripted-admin.ts)
   --model <name>         Claude model (default sonnet)   --headed   show the browsers   --throttle   slow networks
   --second-language <code>   testers also write in this language, e.g. ar (default: English only; app.yaml second_language)
   --json                 print a JSON summary at the end (for scripts and AI agents)
@@ -49,6 +51,7 @@ const { values: o, positionals } = parseArgs({
     throttle: { type: "boolean", default: false }, // persona network speed; against a production-like build only
     admin: { type: "boolean", default: false }, // testers may call ask_admin; an admin agent sets up their account
     "admin-minutes": { type: "string", default: "10" },
+    account: { type: "boolean", default: false }, // a ready dev account per tester, made by the app's scripted admin
     json: { type: "boolean", default: false },
     "second-language": { type: "string" }, // e.g. ar; "none" for English only (overrides app.yaml)
     help: { type: "boolean", short: "h", default: false },
@@ -96,6 +99,9 @@ if (o.admin) {
   admin = { minutes: Number(o["admin-minutes"]), steps: 40 };
 }
 
+if (o.account && !existsSync(app!.scriptedAdminFile)) die(`--account needs ${app!.scriptedAdminFile} (the API calls that create an account in your dev database; see apps/example/scripted-admin.ts).`);
+if (o.account && !existsSync(app!.adminLoginFile)) die(`--account needs a dev admin login in ${app!.adminLoginFile}: { "phone": "…", "password": "…" } of an admin that exists only in your dev database.`);
+
 let all: ReturnType<typeof listPersonas> = [];
 try {
   all = listPersonas(app!.personasDir);
@@ -114,6 +120,20 @@ const minutes = Number(o.minutes ?? cfg.minutes ?? (o.admin ? 25 : 15));
 const stamp = new Date().toISOString().slice(0, 16).replace("T", "-").replace(":", "");
 const runDir = join(ROOT, "runs", appId, stamp);
 say(`${chosen.length} tester${chosen.length > 1 ? "s" : ""} on ${url}${goal ? ` · goal: ${goal}` : ""}${l2 ? ` · English + ${l2.name}` : ""}\nRun folder: ${runDir}\n`);
+
+// --account: make every tester's account first, so a failure stops the run before any browser opens.
+const accounts = new Map<string, { who: ReturnType<typeof testIdentity>; message: string }>();
+if (o.account) {
+  say("Making a dev account for each tester…");
+  for (const persona of chosen) {
+    const who = testIdentity(persona, cfg.phone_format);
+    try {
+      accounts.set(persona.id, { who, message: await createAccount(app!, url!, who, persona.business.trade, l2, join(runDir, persona.id)) });
+    } catch (e) {
+      die(`Could not make ${persona.id}'s account: ${(e as Error).message}`);
+    }
+  }
+}
 
 // --- live progress: one line per tester, redrawn on a terminal, printed on change otherwise ----------------------
 function status(id: string) {
@@ -145,7 +165,7 @@ await Promise.all(
     const env: Record<string, string> = {};
     if (o.headed) env.UX_HEADED = "1";
     if (o.throttle) env.UX_THROTTLE = "1";
-    await runAgent({ app: app!, lang2: l2, persona, url: url!, dir: join(runDir, persona.id), goal, model: o.model!, steps, minutes, env, admin });
+    await runAgent({ app: app!, lang2: l2, persona, url: url!, dir: join(runDir, persona.id), goal, model: o.model!, steps, minutes, env, admin, who: accounts.get(persona.id)?.who, account: accounts.get(persona.id)?.message });
   }),
 );
 clearInterval(timer);

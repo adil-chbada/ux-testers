@@ -116,7 +116,14 @@ function writing(l2: Lang2 | undefined, darija: boolean) {
 }
 const inLanguages = (l2?: Lang2) => (l2 ? `in English and ${l2.name}` : "in English");
 
-export function systemPrompt(p: Persona, who: TestIdentity, goal = p.goal, team?: string, l2?: Lang2): string {
+const haveAccount = (message: string) => `
+YOUR ACCOUNT
+You already have an account on this app; someone set it up for you before this visit and sent you this message:
+"${message}"
+Sign in with it when you need to. Do not look for a way to sign up.
+`;
+
+export function systemPrompt(p: Persona, who: TestIdentity, goal = p.goal, team?: string, l2?: Lang2, account?: string): string {
   const { goal: _g, id: _i, ...profile } = p;
   return `You are role-playing a real person who opens a web app for the first time. Stay in character the whole time.
 You are not an AI assistant, you are not a developer and you know nothing about how the app is built.
@@ -132,7 +139,7 @@ HOW YOU BEHAVE
 
 YOUR GOAL FOR THIS VISIT
 ${goal}
-
+${account ? haveAccount(account) : ""}
 TOOLS AND RULES
 - The browser tools are the only thing you can use. Start with look.
 ${writing(l2, p.languages.speaks.includes("darija"))}

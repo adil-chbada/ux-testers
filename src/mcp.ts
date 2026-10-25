@@ -62,6 +62,7 @@ server.registerTool(
       goal: z.string().optional().describe("one task for every tester"),
       minutes: z.number().positive().max(60).optional(),
       admin: z.boolean().optional().describe("testers may ask a team member to create their account (needs the app's admin files)"),
+      account: z.boolean().optional().describe("every tester starts with a ready account made in the dev database (needs the app's scripted-admin.ts and admin.local.json)"),
     },
   },
   async (a) => {
@@ -72,6 +73,7 @@ server.registerTool(
     if (a.goal) args.push("--goal", a.goal);
     if (a.minutes) args.push("--minutes", String(a.minutes));
     if (a.admin) args.push("--admin");
+    if (a.account) args.push("--account");
     const jobs = join(runsRoot, "_jobs");
     mkdirSync(jobs, { recursive: true });
     const job = `${a.app}-${Date.now()}`;

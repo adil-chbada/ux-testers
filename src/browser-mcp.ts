@@ -142,6 +142,20 @@ process.stdin.on("end", quit);
 setInterval(() => Date.now() > deadline + 120_000 && quit(), 10_000).unref();
 
 async function observe(name: string) {
+  // Flutter web keeps its accessibility tree off until its hidden "Enable accessibility" button is pressed, and
+  // testers can only act through that tree. On phones Flutter only accepts a press at the button's centre (where a
+  // screen reader taps), so a bare .click() at 0,0 is ignored.
+  const flutter = await page
+    .evaluate(() => {
+      const placeholder = document.querySelector<HTMLElement>("flt-semantics-placeholder");
+      if (!placeholder) return false;
+      const r = placeholder.getBoundingClientRect();
+      const at = { bubbles: true, cancelable: true, clientX: r.left + r.width / 2, clientY: r.top + r.height / 2 };
+      placeholder.dispatchEvent(new MouseEvent("click", at));
+      return true;
+    })
+    .catch(() => false);
+  if (flutter) await page.waitForTimeout(500);
   const shot = `shots/${name}.jpg`;
   const jpg = await page
     .screenshot({ path: `${OUT}/${shot}`, type: "jpeg", quality: 60, scale: "css", style: OVERLAY_HIDE_CSS, timeout: 15_000 })

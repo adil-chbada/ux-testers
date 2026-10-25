@@ -1,8 +1,9 @@
 // The no-AI admin. When the AI admin agent gives no reply (the model's safeguards refused to start it, or it failed),
 // the app's own script (apps/<app>/scripted-admin.ts, default export) does the job through the app's dev API, so the
 // tester still gets in. This file runs that script, only against a local dev address, and gives it a small API helper.
-import { existsSync } from "node:fs";
-import type { AppConfig } from "./app";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { join } from "node:path";
+import type { App, AppConfig } from "./app";
 import type { Lang2 } from "./lang";
 import { isDevUrl } from "./guard";
 import type { AdminLogin, TestIdentity } from "./persona";
@@ -52,4 +53,27 @@ export function devApi(ctx: Pick<ScriptedAdminContext, "origin" | "log">, opts: 
     if (!res.ok) throw new Error(`${step}: HTTP ${res.status} ${json.message ?? ""}`.trim());
     return json;
   };
+}
+
+/**
+ * The dev-account option (--account): before a tester starts, the app's scripted admin makes their account in the dev
+ * database, so dashboard tasks (a first quote, a site, notifications) can be tested without a team member in the loop.
+ * Returns the sign-in message the tester is shown; the calls are saved to <dir>/account.json. Dev addresses only.
+ */
+export async function createAccount(app: App, url: string, who: TestIdentity, trade: string, lang2: Lang2 | undefined, dir: string): Promise<string> {
+  if (!existsSync(app.adminLoginFile)) throw new Error(`--account needs a dev admin login in ${app.adminLoginFile}: { "phone": "…", "password": "…" } of an admin that exists only in your dev database`);
+  const calls: object[] = [];
+  const business = `${trade} ${who.first_name} (test)`;
+  const reply = await runScriptedAdmin(app.scriptedAdminFile, {
+    origin: new URL(url).origin,
+    login: JSON.parse(readFileSync(app.adminLoginFile, "utf8")),
+    who,
+    business,
+    app: app.config,
+    lang2,
+    log: (row) => calls.push({ t: new Date().toISOString(), ...row }),
+  });
+  mkdirSync(dir, { recursive: true });
+  writeFileSync(join(dir, "account.json"), JSON.stringify({ business, ...reply, calls }, null, 1));
+  return reply.message_en;
 }

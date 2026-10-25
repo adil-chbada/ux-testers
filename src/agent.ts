@@ -76,7 +76,8 @@ export type AgentRun = {
   admin?: AdminSetup; // testers only: lets them call ask_admin
   system?: string; // replaces the tester prompt (the admin agent)
   prompt?: string;
-  who?: TestIdentity; // the admin agent works for someone else's identity
+  who?: TestIdentity; // the admin agent works for someone else's identity; with account, the identity the account was made for
+  account?: string; // --account: the sign-in message of the account made for this tester (shown in its prompt)
 };
 
 export async function runAgent(r: AgentRun) {
@@ -91,7 +92,7 @@ export async function runAgent(r: AgentRun) {
 
   const cwd = mkdtempSync(join(tmpdir(), "ux-tester-")); // empty folder: nothing of ours to find
   const t0 = Date.now();
-  const system = r.system ?? systemPrompt(r.persona, who, goal, r.admin ? r.app.config.team : undefined, r.lang2);
+  const system = r.system ?? systemPrompt(r.persona, who, goal, r.admin ? r.app.config.team : undefined, r.lang2, r.account);
   const prompt = r.prompt ?? `The app is open in front of you at ${r.url}. Start your visit: call look.`;
   const visit = async (model: string) => {
     const proc = Bun.spawn(claudeArgs({ prompt, system, mcpConfig: cfg, model }), {

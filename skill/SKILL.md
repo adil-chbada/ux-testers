@@ -21,10 +21,11 @@ Follow the repo's `AGENTS.md`. In short:
    user for the production domains).
 3. **Dev server up**, on localhost, running the code the user wants tested, with outgoing email, SMS and chat
    notifications off and a dev database: testers sign up and submit forms with fake data.
-4. **Run in the background** (2 to 30 minutes): `bun run ux <app> --json [--personas a,b] [--goal "…"] [--admin]`.
+4. **Run in the background** (2 to 30 minutes): `bun run ux <app> --json [--personas a,b] [--goal "…"] [--admin | --account]`.
    The address, testers and goal saved in `apps/<app>/app.yaml` are used when not given. The same `--goal` on a
    low-tech and a high-tech persona shows the gap best; for a game, "learn how to play and finish one round". Add
-   `--admin` when new users need a team member to create their account (needs the app's admin files). English only
+   `--admin` when new users need a team member to create their account (needs the app's admin files), or `--account`
+   to start every tester already signed-up with a dev account (needs `scripted-admin.ts` and `admin.local.json`). English only
    unless the app sets `second_language` (or pass `--second-language ar`).
 5. **Results**: the last stdout line is a JSON summary. Send the user `report_html` (it plays each finding's moment
    in the video) and the main findings from `findings.md`.

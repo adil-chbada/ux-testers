@@ -12,9 +12,9 @@
     "view": "bun src/view.ts"
   },
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.32.1",
+    "@modelcontextprotocol/sdk": "^1.32.2",
     "playwright": "1.62.1",
-    "zod": "^4.6.5"
+    "zod": "^4.6.7"
   },
   "description": "AI test users for web apps, websites and browser games, on a local dev server"
 }

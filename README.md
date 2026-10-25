@@ -63,6 +63,7 @@ bun run ux my-app --personas retiree-low-tech,power-user-pro \
   --goal "Create an account and invite a teammate"           # the same task for a low-tech and a high-tech tester
 bun run ux my-game --goal "Learn how to play and finish one round"
 bun run ux my-app --admin                                    # testers who need a team member to create their account
+bun run ux my-app --account --goal "make your first quote"   # every tester starts signed-up (dev account made for them)
 bun run ux my-app --headed                                   # watch the browsers while they work
 bun run ux --help                                            # every option
 bun run view runs/my-app/<date-time>                         # open a past run's report
@@ -78,6 +79,7 @@ bun run report runs/my-app/<date-time>                       # rebuild a past ru
 | `--goal "…"` | from `app.yaml`, else each tester's own | One task for every tester. |
 | `--steps` / `--minutes` | 60 / 15 (25 with `--admin`) | Most actions and time per tester (waiting for the admin does not count). |
 | `--admin` | off | Testers can ask a team member for an account (see below). `--admin-minutes`: 10. |
+| `--account` | off | Each tester starts with an account already made in your **dev** database (see below), for tasks that happen after sign-in. |
 | `--model` | `sonnet` | Claude model for the testers. |
 | `--headed` | off | Show the browsers. |
 | `--throttle` | off | Each persona's network speed (slow 3G…); use a production-like build. |
@@ -144,6 +146,12 @@ Some apps do not let a newcomer in alone: a team member creates or approves the 
    tester's fake identity, and replies with the login (a chat bubble in both videos).
 3. If the AI admin does not answer, a **scripted admin** (no AI) does the same job through your dev API.
 4. The tester signs in and carries on.
+
+**Skip the wait with `--account`.** To test what happens after sign-in (a first quote, a settings page…), the runner
+makes each tester's account before the browser opens, with the same `scripted-admin.ts`, and tells the tester in its
+prompt "you already have an account" with the sign-in message. Nothing is asked of a team member, no AI admin runs, and
+the accounts exist only in your dev database. Combine `--admin` (sign-up flow) and `--account` (after sign-in) in
+separate runs so each has its own goal.
 
 It needs, in `apps/<app>/`: `admin.yaml` (the admin persona), `admin.local.json` (`{ "phone": "…", "password": "…" }` of
 an admin that exists **only in your dev database**), `admin` paths in `app.yaml`, and `scripted-admin.ts` (your

@@ -18,7 +18,8 @@ themselves. Never sign in for them, never ask for or type a password.
 2. No `apps/<app>/` yet? `bun run init <app> --name "…" --url http://localhost:<port> --prod <domains> --yes`.
    Ask the user for the production domains if you do not know them.
 3. If `apps/<app>/README.md` exists, read it before starting the app's dev server or running anything.
-4. Run in the background (it takes 2 to 30 minutes): `bun run ux <app> --json [--personas a,b] [--goal "…"] [--admin]`.
+4. Run in the background (it takes 2 to 30 minutes): `bun run ux <app> --json [--personas a,b] [--goal "…"] [--admin | --account]`.
+   `--account` makes a dev account per tester first (needs `scripted-admin.ts` and `admin.local.json`).
    The last stdout line is a JSON summary. Exit codes: 0 finished, 1 setup problem, 2 refused, 3 stopped for
    reaching production.
 5. Show the user the main findings, and tell them `bun run view` opens the report with its videos (or open
